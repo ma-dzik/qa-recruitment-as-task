@@ -10,20 +10,22 @@ public final class TestData {
     public static final String HOME_URL = "https://alan-systems.com/";
     public static final String BUSINESS_URL = "https://alan-systems.com/pl/dla-biznesu/";
     public static final String CANDIDATE_URL = "https://alan-systems.com/pl/dla-kandydatow/";
+    public static final String BUSINESS_PATH_MARKER = "/dla-biznesu";
+    public static final String CANDIDATE_PATH_MARKER = "/dla-kandydatow";
 
     // Expected top menu labels (exact labels as in requirement)
-    public static final List<String> BUSINESS_MENU = List.of(
+    public static final List<String> BUSINESS_TOP_MENU = List.of(
             "Dla biznesu",
             "O nas",
             "Oferta",
             "Kontakt",
-            "Kariera w Alan Systems"
+            "Kariera w ALAN SYSTEMS"
     );
 
-    public static final List<String> CANDIDATE_MENU = List.of(
+    public static final List<String> CANDIDATE_TOP_MENU = List.of(
             "Dla kandydata",
             "O nas",
-            "Oferta",
+            "Kariera",
             "Kontakt",
             "Rozwiązania do biznesu"
     );

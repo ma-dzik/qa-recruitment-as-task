@@ -1,88 +1,46 @@
 package com.example.tests;
 
 import com.example.data.TestData;
-import com.example.pages.HomePage;
+import com.example.utils.Logger;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BusinessNavigationTest extends BaseUiTest {
 
     @Test
-    void should_navigate_from_home_to_business_context_and_show_business_top_menu() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    void should_navigate_through_all_business_top_menu_items_and_validate_topnav_and_footer() {
 
-        System.out.println("[INFO] Open Home: " + TestData.HOME_URL);
-        HomePage home = new HomePage(driver).open();
+        Logger.info("Open Home: " + TestData.HOME_URL);
+        homePage.open();
+        waitForPageReady();
 
-        System.out.println("[INFO] Click: 'DOWIEDZ SIĘ WIĘCEJ' -> expect Business page: " + TestData.BUSINESS_URL);
-        home.goToBusiness();
+        Logger.info("Go to Business context via HomePage CTA");
+        homePage.goToBusiness();
+        waitForPageReady();
 
-        // --- URL assertion (robust against missing trailing slash / redirects) ---
         String actualUrl = normalizeUrl(driver.getCurrentUrl());
         String expectedUrl = normalizeUrl(TestData.BUSINESS_URL);
 
-        System.out.println("[INFO] Current URL after navigation: " + actualUrl);
+        Logger.info("Current URL: " + actualUrl);
         assertEquals(expectedUrl, actualUrl,
-                "After clicking 'Dowiedz się więcej' user should land on Business context URL");
+                "User should land on Business page after clicking business CTA");
 
-        // --- Top menu assertions (all items visible) ---
-        System.out.println("[INFO] Verify Business top menu items are visible: " + TestData.BUSINESS_MENU);
+        Logger.info("Iterate through Business Top Menu items (count=" + TestData.BUSINESS_TOP_MENU.size() + ")");
 
-        assertAll("Business top menu items visibility",
-                () -> assertTopMenuItemVisible(wait, "Dla biznesu"),
-                () -> assertTopMenuItemVisible(wait, "O nas"),
-                () -> assertTopMenuItemVisible(wait, "Oferta"),
-                () -> assertTopMenuItemVisible(wait, "Kontakt"),
-                () -> assertTopMenuItemVisibleContainsIgnoreCase(wait, "Kariera w", "alan systems")
-        );
+        for (String label : TestData.BUSINESS_TOP_MENU) {
+            Logger.info("Navigate via TopNav: '" + label + "'");
+            topNav.clickItemExact(label);
+            waitForPageReady();
+            verifyChromeForCurrentContext();
+        }
 
-        System.out.println("[INFO] PASS: Business navigation + top menu verified.");
+        Logger.ok("PASS: Business navigation across top menu + footer verified on each page");
     }
 
-    // ---- helpers (only for this test class) ----
-
-    private static String normalizeUrl(String url) {
+    private String normalizeUrl(String url) {
         if (url == null) return null;
-        // usuń ewentualne # i ? (żeby porównanie było stabilne)
-        String u = url.split("#", 2)[0].split("\\?", 2)[0];
-        // ujednolić końcowy slash
-        return u.endsWith("/") ? u : (u + "/");
-    }
-
-    private void assertTopMenuItemVisible(WebDriverWait wait, String exactLabel) {
-        By locator = By.xpath("//header//*[self::a or self::button][normalize-space()='" + exactLabel + "']");
-        System.out.println("[CHECK] Expect menu item visible: " + exactLabel);
-
-        try {
-            WebElement el = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-            assertTrue(el.isDisplayed(), "Top menu item should be visible: '" + exactLabel + "'");
-            System.out.println("[OK] Menu visible: " + exactLabel);
-        } catch (org.openqa.selenium.TimeoutException e) {
-            System.out.println("[NOT OK] Menu missing: " + exactLabel);
-            fail("Missing top menu item: '" + exactLabel + "'. Current URL: " + driver.getCurrentUrl());
-        }
-    }
-
-    private void assertTopMenuItemVisibleContainsIgnoreCase(WebDriverWait wait, String... parts) {
-        // Budujemy XPath, który sprawdza, że tekst zawiera wszystkie fragmenty (case-insensitive)
-        // używamy translate() do zrobienia "lowercase" w XPath 1.0
-        String textExpr = "translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZĄĆĘŁŃÓŚŻŹ', 'abcdefghijklmnopqrstuvwxyząćęłńóśżź')";
-        StringBuilder predicate = new StringBuilder();
-        for (String p : parts) {
-            String lower = p.toLowerCase();
-            predicate.append(" and contains(").append(textExpr).append(", '").append(lower).append("')");
-        }
-
-        By locator = By.xpath("//header//*[self::a or self::button][" + predicate.substring(5) + "]");
-        WebElement el = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-        assertTrue(el.isDisplayed(), "Top menu item containing parts should be visible: " + String.join(" | ", parts));
-        System.out.println("[INFO] Menu visible (contains): " + String.join(" | ", parts));
+        String normalized = url.split("#")[0].split("\\?")[0];
+        return normalized.endsWith("/") ? normalized : normalized + "/";
     }
 }
