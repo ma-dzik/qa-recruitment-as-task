@@ -10,6 +10,7 @@ The manual part focuses on test analysis, test case design and defect reporting,
 
 ## Repository structure
 
+.
 ├── manual/
 │ ├── Zadanie1/
 │ ├── Zadanie2/
