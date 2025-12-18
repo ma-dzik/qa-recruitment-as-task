@@ -58,7 +58,6 @@ public class TopNavComponent {
         try {
             return nav.findElement(By.xpath(xpath));
         } catch (NoSuchElementException e) {
-            // Dajemy maksymalnie przydatny komunikat do debugowania
             Logger.notOk("TopNav: item not found in header nav: '" + label + "'");
             throw new AssertionError("TopNav: item not found in header nav: '" + label + "'", e);
         }
@@ -79,7 +78,6 @@ public class TopNavComponent {
                 sb.append(", \"'\", ");
             }
         }
-        sb.append(")");
-        return text;
+        return sb.toString();
     }
 }

@@ -3,6 +3,7 @@ package com.example.tests;
 import com.example.data.TestData;
 import com.example.utils.Logger;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriverException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,10 +30,15 @@ public class BusinessNavigationTest extends BaseUiTest {
         Logger.info("Iterate through Business Top Menu items (count=" + TestData.BUSINESS_TOP_MENU.size() + ")");
 
         for (String label : TestData.BUSINESS_TOP_MENU) {
-            Logger.info("Navigate via TopNav: '" + label + "'");
-            topNav.clickItemExact(label);
-            waitForPageReady();
-            verifyChromeForCurrentContext();
+            try {
+                Logger.info("Navigating to: " + label);
+                topNav.clickItemExact(label);
+                waitForPageReady();
+                verifyChromeForCurrentContext();
+            } catch (AssertionError | WebDriverException e) {
+                Logger.error("Navigation failed for item: " + label);
+                throw new AssertionError("Navigation failed for " + label, e);
+            }
         }
 
         Logger.ok("PASS: Business navigation across top menu + footer verified on each page");

@@ -5,8 +5,9 @@ import com.example.components.TopNavComponent;
 import com.example.pages.HomePage;
 import com.example.utils.Logger;
 import com.example.data.TestData;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.*;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,7 +15,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.time.Duration;
 import java.util.List;
 
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+//@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public abstract class BaseUiTest {
 
     protected WebDriver driver;
@@ -33,7 +34,6 @@ public abstract class BaseUiTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0)); // świadomie: bez implicit wait
         driver.manage().window().maximize();
 
-        // Inicjalizacja Page/Component – single place
         topNav = new TopNavComponent(driver);
         footer = new FooterComponent(driver);
         homePage = new HomePage(driver);
@@ -51,23 +51,22 @@ public abstract class BaseUiTest {
     }
 
     protected void waitForPageReady() {
-        Logger.check("Wait for document.readyState=complete");
+        //Logger.check("Wait for document.readyState=complete");
 
-        // Prosty polling bez wpychania dodatkowych helperów:
         long end = System.currentTimeMillis() + 10_000;
 
         while (System.currentTimeMillis() < end) {
             try {
                 Object state = ((JavascriptExecutor) driver).executeScript("return document.readyState");
                 if ("complete".equals(state)) {
-                    Logger.ok("Page ready (document.readyState=complete)");
+                    //Logger.ok("Page ready (document.readyState=complete)");
                     return;
                 }
             } catch (Exception ignored) {
-                // jeśli JSExecutor chwilowo nie działa (np. w trakcie przeładowania), próbujemy dalej
             }
 
-            try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+            try { Thread.sleep(100); }
+            catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         }
 
         Logger.notOk("Timeout waiting for page ready");
@@ -75,23 +74,23 @@ public abstract class BaseUiTest {
     }
 
     protected List<String> expectedTopMenuForCurrentContext() {
-        String url = driver.getCurrentUrl();
+        String url = driver.getCurrentUrl().split("#")[0].split("\\?")[0];
         if (url.contains(TestData.BUSINESS_PATH_MARKER)) {
             return TestData.BUSINESS_TOP_MENU;
         }
         if (url.contains(TestData.CANDIDATE_PATH_MARKER)) {
             return TestData.CANDIDATE_TOP_MENU;
         }
-        // Jeśli trafisz na coś innego (np. zewnętrzny link), fail szybko i jasno
         throw new AssertionError("Unknown context for URL: " + url);
     }
 
     protected void verifyTopMenu(List<String> expectedMenuItems) {
-        Logger.info("Verify TopNav menu items (count=" + expectedMenuItems.size() + ")");
+        //Logger.info("Verify Top Menu Nav items (count=" + expectedMenuItems.size() + ")");
+        Logger.check("Top Menu Nav: verify required items for URL=" + driver.getCurrentUrl());
         for (String label : expectedMenuItems) {
             topNav.assertItemVisibleExact(label);
         }
-        Logger.ok("TopNav verified");
+        Logger.ok("Top Menu Nav verified");
     }
 
     protected void verifyFooter() {
