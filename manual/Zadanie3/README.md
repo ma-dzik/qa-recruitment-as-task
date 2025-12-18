@@ -1,0 +1,3 @@
+# Bug Report – Multi-select Country Filter
+This directory contains a bug report prepared as part of Task 3 of the recruitment assignment. The reported issue concerns a multi-select country filter with a search input, where typing a valid country name results in an empty result list. 
+The full bug report, including description, steps to reproduce, expected and actual results, is provided in a separate file according to the task requirements: `bug-report.md`

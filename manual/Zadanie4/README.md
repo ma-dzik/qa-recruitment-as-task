@@ -1,0 +1,3 @@
+# Anagram Check – Method Implementation
+This directory contains a method implementation prepared as part of Task 4 of the recruitment assignment. The task focuses on checking whether two given strings are anagrams, based on the definition that an anagram uses the same letters in a different order (e.g. "listen" and "silent").
+The solution is provided in a separate file and focuses on the algorithmic approach rather than language-specific details, as required by the task description: `anagram.md`
