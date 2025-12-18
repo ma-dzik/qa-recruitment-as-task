@@ -2,11 +2,11 @@ package com.example.tests;
 
 import com.example.data.TestData;
 import com.example.utils.Logger;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test;import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.WebDriverException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Tag("zadanie1")
 public class BusinessNavigationTest extends BaseUiTest {
 
     @Test

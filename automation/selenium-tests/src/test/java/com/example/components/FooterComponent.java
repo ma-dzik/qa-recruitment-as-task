@@ -38,11 +38,9 @@ public class FooterComponent {
         WebElement footer = wait.until(ExpectedConditions.presenceOfElementLocated(footerRoot));
 
         try {
-            // 1) Najbardziej stabilne: mailto lub tel w obrębie footera
             boolean hasMailto = !footer.findElements(By.cssSelector("a[href^='mailto:']")).isEmpty();
             boolean hasTel = !footer.findElements(By.cssSelector("a[href^='tel:']")).isEmpty();
 
-            // 2) Alternatywnie: tekst "Kontakt" w footerze (PL) — bywa w nagłówku sekcji
             boolean hasKontaktText = !footer.findElements(
                     By.xpath(".//*[contains(translate(normalize-space(), 'KONTAKT', 'kontakt'), 'kontakt')]")
             ).isEmpty();

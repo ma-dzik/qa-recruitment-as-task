@@ -3,9 +3,11 @@ package com.example.tests;
 import com.example.data.TestData;
 import com.example.utils.Logger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Tag("zadanie1")
 public class CandidateNavigationTest extends BaseUiTest {
 
     @Test
